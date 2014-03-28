@@ -18,7 +18,10 @@
 #
 
 # include epel on redhat/centos 5 and below in order to get the memcached packages
-include_recipe 'yum-epel' if node['platform_family'] == 'rhel' && node['platform_version'].to_f <= 5.6
+if node['platform_family'] == 'rhel' && node['platform_version'].to_i == 5
+  epel_repo = `yum repolist enabled | grep -c epel`
+  include_recipe 'yum-epel' unless epel_repo > 0
+end
 
 package 'memcached'
 
